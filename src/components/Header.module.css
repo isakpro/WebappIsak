@@ -1,0 +1,37 @@
+.header {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.mark {
+  flex: none;
+  width: 40px;
+  height: 40px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* The tagline is a nice-to-have, so it is the first thing to go on narrow phones. */
+@media (max-width: 480px) {
+  .tagline {
+    display: none;
+  }
+}
