@@ -79,3 +79,9 @@
 .submit:hover {
   background-color: var(--accent-dark);
 }
+
+@media (max-width: 480px) {
+  .form {
+    padding: var(--space-4);
+  }
+}

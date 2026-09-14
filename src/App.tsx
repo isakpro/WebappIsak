@@ -32,7 +32,9 @@ export default function App() {
     <>
       <Header />
       <main className={styles.main}>
-        <NewEntryForm onAdd={addEntry} />
+        <div className={styles.sidebar}>
+          <NewEntryForm onAdd={addEntry} />
+        </div>
         <EntryList entries={entries} onToggleGoal={toggleGoal} />
       </main>
     </>
