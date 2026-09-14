@@ -1,5 +1,3 @@
-/* Design tokens. Every component reads its colours and spacing from here,
-   so the whole app can be restyled from one place. */
 :root {
   --bg: #fbf6f0;
   --surface: #ffffff;

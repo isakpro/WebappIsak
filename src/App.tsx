@@ -5,7 +5,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <main className={styles.main}>{/* The diary feed goes here. */}</main>
+      <main className={styles.main}></main>
     </>
   );
 }

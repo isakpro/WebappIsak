@@ -1,0 +1,104 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.photo,
+.photoFallback {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  object-fit: cover;
+  background-color: var(--surface-soft);
+}
+
+.photoFallback {
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  opacity: 0.45;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.date {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.story {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.goal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.goalText {
+  flex: 1 1 140px;
+  font-size: 0.9375rem;
+}
+
+.goalLabel {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.goalDone {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.toggle {
+  flex: none;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--accent-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background-color: var(--accent-soft);
+}
+
+.toggleDone {
+  border-color: var(--success);
+  background-color: var(--success);
+  color: #fff;
+}
+
+.toggleDone:hover {
+  background-color: var(--success);
+  opacity: 0.9;
+}

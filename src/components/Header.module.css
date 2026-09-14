@@ -29,7 +29,6 @@
   font-size: 0.875rem;
 }
 
-/* The tagline is a nice-to-have, so it is the first thing to go on narrow phones. */
 @media (max-width: 480px) {
   .tagline {
     display: none;
