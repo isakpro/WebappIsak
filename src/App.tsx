@@ -1,12 +1,22 @@
 import { useState } from "react";
 import { Header } from "./components/Header";
 import { EntryList } from "./components/EntryList";
+import { NewEntryForm } from "./components/NewEntryForm";
 import { sampleEntries } from "./data/sampleEntries";
-import type { DiaryEntry } from "./types/entry";
+import type { DiaryEntry, NewDiaryEntry } from "./types/entry";
 import styles from "./App.module.css";
 
 export default function App() {
   const [entries, setEntries] = useState<DiaryEntry[]>(sampleEntries);
+
+  function addEntry(entry: NewDiaryEntry) {
+    const newEntry: DiaryEntry = {
+      ...entry,
+      id: crypto.randomUUID(),
+      goalCompleted: false,
+    };
+    setEntries((current) => [newEntry, ...current]);
+  }
 
   function toggleGoal(id: string) {
     setEntries((current) =>
@@ -22,6 +32,7 @@ export default function App() {
     <>
       <Header />
       <main className={styles.main}>
+        <NewEntryForm onAdd={addEntry} />
         <EntryList entries={entries} onToggleGoal={toggleGoal} />
       </main>
     </>
