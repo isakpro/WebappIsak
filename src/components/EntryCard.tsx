@@ -9,7 +9,7 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
 
 interface EntryCardProps {
   entry: DiaryEntry;
-  onToggleGoal: (id: string) => void;
+  onToggleGoal: (id: number) => void;
 }
 
 export function EntryCard({ entry, onToggleGoal }: EntryCardProps) {

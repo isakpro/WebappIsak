@@ -12,13 +12,13 @@ export default function App() {
   function addEntry(entry: NewDiaryEntry) {
     const newEntry: DiaryEntry = {
       ...entry,
-      id: crypto.randomUUID(),
+      id: Date.now(),
       goalCompleted: false,
     };
     setEntries((current) => [newEntry, ...current]);
   }
 
-  function toggleGoal(id: string) {
+  function toggleGoal(id: number) {
     setEntries((current) =>
       current.map((entry) =>
         entry.id === id

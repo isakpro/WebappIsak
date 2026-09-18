@@ -4,7 +4,7 @@ import styles from "./EntryList.module.css";
 
 interface EntryListProps {
   entries: DiaryEntry[];
-  onToggleGoal: (id: string) => void;
+  onToggleGoal: (id: number) => void;
 }
 
 export function EntryList({ entries, onToggleGoal }: EntryListProps) {

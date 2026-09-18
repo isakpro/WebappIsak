@@ -1,5 +1,5 @@
 export interface DiaryEntry {
-  id: string;
+  id: number;
   date: string;
   title: string;
   story: string;
@@ -7,5 +7,7 @@ export interface DiaryEntry {
   goalCompleted: boolean;
   photoUrl: string | null;
 }
+
+export type EntryRequest = Omit<DiaryEntry, "id" | "photoUrl">;
 
 export type NewDiaryEntry = Omit<DiaryEntry, "id" | "goalCompleted">;

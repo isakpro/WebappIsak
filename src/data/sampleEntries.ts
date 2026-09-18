@@ -2,7 +2,7 @@ import type { DiaryEntry } from "../types/entry";
 
 export const sampleEntries: DiaryEntry[] = [
   {
-    id: "1",
+    id: 1,
     date: "2026-09-14",
     title: "First swim of the autumn",
     story:
@@ -12,7 +12,7 @@ export const sampleEntries: DiaryEntry[] = [
     photoUrl: null,
   },
   {
-    id: "2",
+    id: 2,
     date: "2026-09-13",
     title: "Met the neighbour's cat",
     story:
@@ -22,7 +22,7 @@ export const sampleEntries: DiaryEntry[] = [
     photoUrl: null,
   },
   {
-    id: "3",
+    id: 3,
     date: "2026-09-12",
     title: "Rainy day indoors",
     story:
