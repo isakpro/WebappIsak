@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from "react";
-import type { NewDiaryEntry } from "../types/entry";
+import { getErrorMessage } from "../api/client";
+import type { EntryRequest } from "../types/entry";
+import { ErrorMessage } from "./ErrorMessage";
 import styles from "./NewEntryForm.module.css";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
 interface NewEntryFormProps {
-  onAdd: (entry: NewDiaryEntry) => void;
+  onAdd: (entry: EntryRequest) => Promise<void>;
 }
 
 export function NewEntryForm({ onAdd }: NewEntryFormProps) {
@@ -14,21 +16,36 @@ export function NewEntryForm({ onAdd }: NewEntryFormProps) {
   const [story, setStory] = useState("");
   const [trainingGoal, setTrainingGoal] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    onAdd({
-      date,
-      title: title.trim(),
-      story: story.trim(),
-      trainingGoal: trainingGoal.trim(),
-      photoUrl,
-    });
+  function reset() {
     setTitle("");
     setStory("");
     setTrainingGoal("");
     setPhotoUrl(null);
     setDate(today());
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      await onAdd({
+        date,
+        title: title.trim(),
+        story: story.trim(),
+        trainingGoal: trainingGoal.trim(),
+        goalCompleted: false,
+      });
+      reset();
+    } catch (error) {
+      setSaveError(getErrorMessage(error));
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -60,6 +77,7 @@ export function NewEntryForm({ onAdd }: NewEntryFormProps) {
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           placeholder="First swim of the autumn"
+          maxLength={80}
           required
         />
       </div>
@@ -74,6 +92,7 @@ export function NewEntryForm({ onAdd }: NewEntryFormProps) {
           value={story}
           onChange={(event) => setStory(event.target.value)}
           placeholder="Stood in the shallows for ten minutes before deciding the water was fine."
+          maxLength={1000}
         />
       </div>
 
@@ -88,6 +107,7 @@ export function NewEntryForm({ onAdd }: NewEntryFormProps) {
           value={trainingGoal}
           onChange={(event) => setTrainingGoal(event.target.value)}
           placeholder="Come back on recall near water"
+          maxLength={120}
         />
       </div>
 
@@ -108,8 +128,12 @@ export function NewEntryForm({ onAdd }: NewEntryFormProps) {
         />
       </div>
 
-      <button className={styles.submit} type="submit">
-        Save entry
+      {saveError && (
+        <ErrorMessage title="Could not save the entry" message={saveError} />
+      )}
+
+      <button className={styles.submit} type="submit" disabled={isSaving}>
+        {isSaving ? "Saving…" : "Save entry"}
       </button>
     </form>
   );

@@ -9,5 +9,3 @@ export interface DiaryEntry {
 }
 
 export type EntryRequest = Omit<DiaryEntry, "id" | "photoUrl">;
-
-export type NewDiaryEntry = Omit<DiaryEntry, "id" | "goalCompleted">;

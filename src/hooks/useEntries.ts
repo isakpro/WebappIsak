@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "../api/client";
-import { getEntries } from "../api/entries";
-import type { DiaryEntry, NewDiaryEntry } from "../types/entry";
+import { createEntry, getEntries } from "../api/entries";
+import type { DiaryEntry, EntryRequest } from "../types/entry";
+
+function sortNewestFirst(entries: DiaryEntry[]) {
+  return entries.toSorted(
+    (a, b) => b.date.localeCompare(a.date) || b.id - a.id,
+  );
+}
 
 export function useEntries() {
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
@@ -36,13 +42,9 @@ export function useEntries() {
     setLoadAttempt((current) => current + 1);
   }
 
-  function addEntry(entry: NewDiaryEntry) {
-    const newEntry: DiaryEntry = {
-      ...entry,
-      id: Date.now(),
-      goalCompleted: false,
-    };
-    setEntries((current) => [newEntry, ...current]);
+  async function addEntry(entry: EntryRequest) {
+    const created = await createEntry(entry);
+    setEntries((current) => sortNewestFirst([created, ...current]));
   }
 
   function toggleGoal(id: number) {

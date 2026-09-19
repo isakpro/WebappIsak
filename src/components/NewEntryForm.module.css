@@ -80,6 +80,12 @@
   background-color: var(--accent-dark);
 }
 
+.submit:disabled {
+  background-color: var(--accent);
+  opacity: 0.6;
+  cursor: progress;
+}
+
 @media (max-width: 480px) {
   .form {
     padding: var(--space-4);
