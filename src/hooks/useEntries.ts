@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "../api/client";
-import { createEntry, getEntries } from "../api/entries";
+import { createEntry, getEntries, uploadPhoto } from "../api/entries";
 import type { DiaryEntry, EntryRequest } from "../types/entry";
 
 function sortNewestFirst(entries: DiaryEntry[]) {
@@ -42,9 +42,21 @@ export function useEntries() {
     setLoadAttempt((current) => current + 1);
   }
 
-  async function addEntry(entry: EntryRequest) {
+  async function addEntry(entry: EntryRequest, photo: File | null) {
     const created = await createEntry(entry);
-    setEntries((current) => sortNewestFirst([created, ...current]));
+    let saved = created;
+    let photoError: string | null = null;
+
+    if (photo) {
+      try {
+        saved = await uploadPhoto(created.id, photo);
+      } catch (error) {
+        photoError = getErrorMessage(error);
+      }
+    }
+
+    setEntries((current) => sortNewestFirst([saved, ...current]));
+    return { photoError };
   }
 
   function toggleGoal(id: number) {

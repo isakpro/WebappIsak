@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { getErrorMessage } from "../api/client";
 import type { EntryRequest } from "../types/entry";
 import { ErrorMessage } from "./ErrorMessage";
@@ -6,8 +6,19 @@ import styles from "./NewEntryForm.module.css";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const PHOTO_TYPES = ".jpg,.jpeg,.png,.webp,.gif";
+
+interface FormError {
+  title: string;
+  message: string;
+}
+
 interface NewEntryFormProps {
-  onAdd: (entry: EntryRequest) => Promise<void>;
+  onAdd: (
+    entry: EntryRequest,
+    photo: File | null,
+  ) => Promise<{ photoError: string | null }>;
 }
 
 export function NewEntryForm({ onAdd }: NewEntryFormProps) {
@@ -15,34 +26,73 @@ export function NewEntryForm({ onAdd }: NewEntryFormProps) {
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
   const [trainingGoal, setTrainingGoal] = useState("");
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<FormError | null>(null);
+  const photoInput = useRef<HTMLInputElement>(null);
+
+  function selectPhoto(file: File | null) {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPhoto(file);
+    setPreviewUrl(file ? URL.createObjectURL(file) : null);
+  }
+
+  function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0] ?? null;
+
+    if (file && file.size > MAX_PHOTO_BYTES) {
+      event.target.value = "";
+      selectPhoto(null);
+      setFormError({
+        title: "The photo is too large",
+        message: "Choose a photo that is at most 5 MB.",
+      });
+      return;
+    }
+
+    setFormError(null);
+    selectPhoto(file);
+  }
 
   function reset() {
     setTitle("");
     setStory("");
     setTrainingGoal("");
-    setPhotoUrl(null);
     setDate(today());
+    selectPhoto(null);
+    if (photoInput.current) photoInput.current.value = "";
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSaving(true);
-    setSaveError(null);
+    setFormError(null);
 
     try {
-      await onAdd({
-        date,
-        title: title.trim(),
-        story: story.trim(),
-        trainingGoal: trainingGoal.trim(),
-        goalCompleted: false,
-      });
+      const { photoError } = await onAdd(
+        {
+          date,
+          title: title.trim(),
+          story: story.trim(),
+          trainingGoal: trainingGoal.trim(),
+          goalCompleted: false,
+        },
+        photo,
+      );
       reset();
+
+      if (photoError) {
+        setFormError({
+          title: "The entry was saved without its photo",
+          message: photoError,
+        });
+      }
     } catch (error) {
-      setSaveError(getErrorMessage(error));
+      setFormError({
+        title: "Could not save the entry",
+        message: getErrorMessage(error),
+      });
     } finally {
       setIsSaving(false);
     }
@@ -115,21 +165,21 @@ export function NewEntryForm({ onAdd }: NewEntryFormProps) {
         <label className={styles.label} htmlFor="photo">
           Photo
         </label>
-        {photoUrl && <img className={styles.preview} src={photoUrl} alt="" />}
+        {previewUrl && (
+          <img className={styles.preview} src={previewUrl} alt="" />
+        )}
         <input
+          ref={photoInput}
           className={styles.file}
           id="photo"
           type="file"
-          accept="image/*"
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            setPhotoUrl(file ? URL.createObjectURL(file) : null);
-          }}
+          accept={PHOTO_TYPES}
+          onChange={handlePhotoChange}
         />
       </div>
 
-      {saveError && (
-        <ErrorMessage title="Could not save the entry" message={saveError} />
+      {formError && (
+        <ErrorMessage title={formError.title} message={formError.message} />
       )}
 
       <button className={styles.submit} type="submit" disabled={isSaving}>
