@@ -31,6 +31,12 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
+export function getErrorMessage(error: unknown) {
+  return error instanceof ApiError
+    ? error.message
+    : "Something went wrong. Please try again.";
+}
+
 export function resolveUrl(path: string) {
   return new URL(path, API_URL).href;
 }
