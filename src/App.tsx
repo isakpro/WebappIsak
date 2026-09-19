@@ -1,32 +1,11 @@
-import { useState } from "react";
 import { Header } from "./components/Header";
 import { EntryList } from "./components/EntryList";
 import { NewEntryForm } from "./components/NewEntryForm";
-import { sampleEntries } from "./data/sampleEntries";
-import type { DiaryEntry, NewDiaryEntry } from "./types/entry";
+import { useEntries } from "./hooks/useEntries";
 import styles from "./App.module.css";
 
 export default function App() {
-  const [entries, setEntries] = useState<DiaryEntry[]>(sampleEntries);
-
-  function addEntry(entry: NewDiaryEntry) {
-    const newEntry: DiaryEntry = {
-      ...entry,
-      id: Date.now(),
-      goalCompleted: false,
-    };
-    setEntries((current) => [newEntry, ...current]);
-  }
-
-  function toggleGoal(id: number) {
-    setEntries((current) =>
-      current.map((entry) =>
-        entry.id === id
-          ? { ...entry, goalCompleted: !entry.goalCompleted }
-          : entry,
-      ),
-    );
-  }
+  const { entries, addEntry, toggleGoal } = useEntries();
 
   return (
     <>
