@@ -31,6 +31,10 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
+export function resolveUrl(path: string) {
+  return new URL(path, API_URL).href;
+}
+
 async function readErrorMessage(response: Response): Promise<string> {
   const fallback = `The request failed (${response.status}).`;
 
