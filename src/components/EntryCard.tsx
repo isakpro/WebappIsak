@@ -31,24 +31,26 @@ export function EntryCard({ entry, onToggleGoal }: EntryCardProps) {
           {dateFormat.format(new Date(date))}
         </time>
         <h3 className={styles.title}>{title}</h3>
-        <p className={styles.story}>{story}</p>
+        {story && <p className={styles.story}>{story}</p>}
 
-        <div className={styles.goal}>
-          <p className={styles.goalText}>
-            <span className={styles.goalLabel}>Training goal</span>
-            <span className={goalCompleted ? styles.goalDone : undefined}>
-              {trainingGoal}
-            </span>
-          </p>
-          <button
-            type="button"
-            className={`${styles.toggle} ${goalCompleted ? styles.toggleDone : ""}`}
-            aria-pressed={goalCompleted}
-            onClick={() => onToggleGoal(id)}
-          >
-            {goalCompleted ? "Done" : "Mark as done"}
-          </button>
-        </div>
+        {trainingGoal && (
+          <div className={styles.goal}>
+            <p className={styles.goalText}>
+              <span className={styles.goalLabel}>Training goal</span>
+              <span className={goalCompleted ? styles.goalDone : undefined}>
+                {trainingGoal}
+              </span>
+            </p>
+            <button
+              type="button"
+              className={`${styles.toggle} ${goalCompleted ? styles.toggleDone : ""}`}
+              aria-pressed={goalCompleted}
+              onClick={() => onToggleGoal(id)}
+            >
+              {goalCompleted ? "Done" : "Mark as done"}
+            </button>
+          </div>
+        )}
       </div>
     </article>
   );
