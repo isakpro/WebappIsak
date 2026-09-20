@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { getErrorMessage } from "../api/client";
 import type { DiaryEntry } from "../types/entry";
+import { ErrorMessage } from "./ErrorMessage";
 import styles from "./EntryCard.module.css";
 
 const dateFormat = new Intl.DateTimeFormat("en-GB", {
@@ -9,12 +12,32 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
 
 interface EntryCardProps {
   entry: DiaryEntry;
-  onToggleGoal: (id: number) => void;
+  onToggleGoal: (id: number) => Promise<void>;
 }
 
 export function EntryCard({ entry, onToggleGoal }: EntryCardProps) {
   const { id, date, title, story, trainingGoal, goalCompleted, photoUrl } =
     entry;
+  const [isSaving, setIsSaving] = useState(false);
+  const [toggleError, setToggleError] = useState<string | null>(null);
+
+  async function handleToggle() {
+    setIsSaving(true);
+    setToggleError(null);
+
+    try {
+      await onToggleGoal(id);
+    } catch (error) {
+      setToggleError(getErrorMessage(error));
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  function toggleLabel() {
+    if (isSaving) return "Saving…";
+    return goalCompleted ? "Done" : "Mark as done";
+  }
 
   return (
     <article className={styles.card}>
@@ -45,11 +68,19 @@ export function EntryCard({ entry, onToggleGoal }: EntryCardProps) {
               type="button"
               className={`${styles.toggle} ${goalCompleted ? styles.toggleDone : ""}`}
               aria-pressed={goalCompleted}
-              onClick={() => onToggleGoal(id)}
+              onClick={handleToggle}
+              disabled={isSaving}
             >
-              {goalCompleted ? "Done" : "Mark as done"}
+              {toggleLabel()}
             </button>
           </div>
+        )}
+
+        {toggleError && (
+          <ErrorMessage
+            title="Could not update the training goal"
+            message={toggleError}
+          />
         )}
       </div>
     </article>

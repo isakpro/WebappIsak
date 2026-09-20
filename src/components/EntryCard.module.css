@@ -92,6 +92,11 @@
   background-color: var(--accent-soft);
 }
 
+.toggle:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .toggleDone {
   border-color: var(--success);
   background-color: var(--success);

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "../api/client";
-import { createEntry, getEntries, uploadPhoto } from "../api/entries";
+import {
+  createEntry,
+  getEntries,
+  updateEntry,
+  uploadPhoto,
+} from "../api/entries";
 import type { DiaryEntry, EntryRequest } from "../types/entry";
 
 function sortNewestFirst(entries: DiaryEntry[]) {
@@ -59,12 +64,22 @@ export function useEntries() {
     return { photoError };
   }
 
-  function toggleGoal(id: number) {
+  async function toggleGoal(id: number) {
+    const entry = entries.find((candidate) => candidate.id === id);
+
+    if (!entry) return;
+
+    const updated = await updateEntry(id, {
+      date: entry.date,
+      title: entry.title,
+      story: entry.story,
+      trainingGoal: entry.trainingGoal,
+      goalCompleted: !entry.goalCompleted,
+    });
+
     setEntries((current) =>
-      current.map((entry) =>
-        entry.id === id
-          ? { ...entry, goalCompleted: !entry.goalCompleted }
-          : entry,
+      current.map((candidate) =>
+        candidate.id === updated.id ? updated : candidate,
       ),
     );
   }

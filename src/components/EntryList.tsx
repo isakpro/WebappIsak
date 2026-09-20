@@ -8,7 +8,7 @@ interface EntryListProps {
   isLoading: boolean;
   error: string | null;
   onRetry: () => void;
-  onToggleGoal: (id: number) => void;
+  onToggleGoal: (id: number) => Promise<void>;
 }
 
 export function EntryList({
