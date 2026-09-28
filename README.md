@@ -11,7 +11,7 @@ plattformen:
 | --- | --- | --- |
 | Webbapp | React + TypeScript | det här repot |
 | Backend / API | ASP.NET WebAPI | [pawlog-api](https://github.com/isakpro/pawlog-api) |
-| Mobilapp | React Native (Expo) | kommer |
+| Mobilapp | React Native (Expo) | [pawlog-app](https://github.com/isakpro/pawlog-app) |
 
 Webbappen sparar ingenting själv. Allt går via det egna API:et, så **backend
 måste köra** för att appen ska visa något.
@@ -199,5 +199,5 @@ lägger till från `min-width` och uppåt, istället för att skriva över stila
 Lista, lägg till med bild och uppdatera fungerar mot det egna API:et, och
 misslyckade anrop visas som felmeddelanden i gränssnittet.
 
-Att ta bort inlägg finns inte i webbappen. Nästa steg är mobilappen, som använder
-samma API.
+Mobilappen i [pawlog-app](https://github.com/isakpro/pawlog-app) använder samma
+API och visar samma inlägg. Att ta bort inlägg finns inte i någon av apparna.
